@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "usuario", url = "${usuario.url}")
 public interface UsuarioClient {
 
-    @GetMapping
+    @GetMapping("/user")
     UsuarioDTO buscarUsuarioPorEmail(@RequestParam("email") @Valid String email,
                                      @RequestHeader("Authorization")  String token);
 }
