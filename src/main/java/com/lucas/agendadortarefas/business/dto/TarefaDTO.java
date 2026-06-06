@@ -2,7 +2,9 @@ package com.lucas.agendadortarefas.business.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lucas.agendadortarefas.infrastructure.enums.StatusNotificacaoEnum;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -28,7 +30,8 @@ public class TarefaDTO {
     private LocalDateTime dataCriacao;
 
     @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    @NotBlank(message = "Data do evento é obrigatória!")
+    @NotNull(message = "Data do evento é obrigatória!")
+    @FutureOrPresent(message = "Data do evento não pode ser no passado!")
     private LocalDateTime dataEvento;
 
     private String usuarioEmail;
