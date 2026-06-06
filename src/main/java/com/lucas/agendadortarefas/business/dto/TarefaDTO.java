@@ -26,7 +26,7 @@ public class TarefaDTO {
     @Size(max = 500, message = "Descrição deve ter no máximo 500 caracteres!")
     private String descricao;
 
-
+    @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dataCriacao;
 
     @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
@@ -36,6 +36,7 @@ public class TarefaDTO {
 
     private String usuarioEmail;
 
+    @JsonFormat(shape =  JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dataAlteracao;
 
     private StatusNotificacaoEnum statusNotificacao;
