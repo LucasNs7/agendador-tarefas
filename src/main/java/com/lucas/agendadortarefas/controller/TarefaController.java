@@ -4,7 +4,6 @@ import com.lucas.agendadortarefas.business.dto.TarefaDTO;
 import com.lucas.agendadortarefas.business.helper.ControllerHelper;
 import com.lucas.agendadortarefas.business.service.TarefaService;
 import com.lucas.agendadortarefas.infrastructure.exception.ResourceNotFoundException;
-import com.lucas.agendadortarefas.infrastructure.security.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,11 +24,30 @@ public class TarefaController {
         return ResponseEntity.ok(tarefaService.criarTarefa(token, tarefaDTO));
     }
 
-    @GetMapping("/event")
+    @GetMapping()
     public ResponseEntity<?> buscarTodasAsTarefasPorEmail(@RequestHeader("Authorization") String token) {
-
         return controllerHelper.tryCatchFunction(
                 () -> tarefaService.buscarTodasAsTarefasPorEmail(token),
+                HttpStatus.OK,
+                ResourceNotFoundException.class,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @GetMapping("/event")
+    public ResponseEntity<?> buscarTarefaPorId(@RequestParam @Valid String id){
+        return controllerHelper.tryCatchFunction(
+                () -> tarefaService.buscarTarefaPorId(id),
+                HttpStatus.OK,
+                ResourceNotFoundException.class,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<?> deletarTarefaPorId(@RequestParam @Valid String id){
+        return controllerHelper.tryCatchFunction(
+                () -> tarefaService.deletarTarefaPorId(id),
                 HttpStatus.OK,
                 ResourceNotFoundException.class,
                 HttpStatus.NOT_FOUND

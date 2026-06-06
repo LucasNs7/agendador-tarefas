@@ -27,10 +27,26 @@ public class ServiceHelper {
                 );
     }
 
+    private Tarefa buscaTarefaPorId(String id) {
+        return tarefaRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Tarefa com id: " + id + " não encontrada!")
+        );
+    }
+
     // ==> TarefaDTO Section
     public List<TarefaDTO> buscarTodasAsTarefasPorEmail(String usuarioEmail) {
          return buscaTodasAsTarefasPorEmail(usuarioEmail).stream()
                  .map(tarefaMapper::paraTarefaDTO)
                  .toList();
+    }
+
+    public TarefaDTO buscarTarefaPorId(String id) {
+        return tarefaMapper.paraTarefaDTO(buscaTarefaPorId(id));
+    }
+
+    public TarefaDTO deletaTarefaPorId(String id) {
+        TarefaDTO dto = buscarTarefaPorId(id);
+        tarefaRepository.deleteById(id);
+        return dto;
     }
 }

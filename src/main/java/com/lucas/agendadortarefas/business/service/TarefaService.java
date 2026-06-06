@@ -24,7 +24,7 @@ public class TarefaService {
     private final JwtUtil jwtUtil;
 
     public TarefaDTO criarTarefa(String token, TarefaDTO tarefaDTO) {
-        String usuarioEmail = jwtUtil.extractUsername(token);
+        String usuarioEmail = jwtUtil.extractUsername(token.substring(7));
         tarefaDTO.setUsuarioEmail(usuarioEmail);
         tarefaDTO.setDataCriacao(LocalDateTime.now());
         tarefaDTO.setDataAlteracao(LocalDateTime.now());
@@ -36,7 +36,17 @@ public class TarefaService {
 
     @Transactional
     public List<TarefaDTO> buscarTodasAsTarefasPorEmail(String token) {
-        String usuarioEmail = jwtUtil.extractUsername(token);
+        String usuarioEmail = jwtUtil.extractUsername(token.substring(7));
         return serviceHelper.buscarTodasAsTarefasPorEmail(usuarioEmail);
+    }
+
+    @Transactional
+    public TarefaDTO buscarTarefaPorId(String id) {
+        return serviceHelper.buscarTarefaPorId(id);
+    }
+
+    @Transactional
+    public TarefaDTO deletarTarefaPorId(String id) {
+        return serviceHelper.deletaTarefaPorId(id);
     }
 }

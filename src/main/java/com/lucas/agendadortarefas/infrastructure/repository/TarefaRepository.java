@@ -11,4 +11,8 @@ import java.util.Optional;
 public interface TarefaRepository extends MongoRepository<Tarefa, String> {
 
     List<Tarefa> findByUsuarioEmail(String usuarioEmail);
+
+    Optional<Tarefa> findById(String id);
+
+    void deleteById(String id);
 }
