@@ -46,6 +46,16 @@ public class TarefaService {
     }
 
     @Transactional
+    public List<TarefaDTO> buscarTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
+        return serviceHelper.buscarTarefasPorPeriodo(inicio, fim);
+    }
+
+    @Transactional
+    public List<TarefaDTO> buscarTarefasPorDataEvento(LocalDateTime dataEvento) {
+        return serviceHelper.buscarTarefasPorDataEvento(dataEvento);
+    }
+
+    @Transactional
     public TarefaDTO deletarTarefaPorId(String id) {
         return serviceHelper.deletaTarefaPorId(id);
     }

@@ -8,6 +8,7 @@ import com.lucas.agendadortarefas.infrastructure.repository.TarefaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,22 @@ public class ServiceHelper {
         );
     }
 
+    private List<Tarefa> buscaTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
+        return Optional.ofNullable(tarefaRepository.findByDataEventoBetween(inicio, fim))
+                .filter(lista -> !lista.isEmpty())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Tarefas não  encontradas!")
+                );
+    }
+
+    public List<Tarefa> buscaTarefasPorDataEvento(LocalDateTime dataEvento) {
+        return Optional.ofNullable(tarefaRepository.findByDataEvento(dataEvento))
+                .filter(lista -> !lista.isEmpty())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Tarefas não encontradas!")
+                );
+    }
+
     // ==> TarefaDTO Section
     public List<TarefaDTO> buscarTodasAsTarefasPorEmail(String usuarioEmail) {
          return buscaTodasAsTarefasPorEmail(usuarioEmail).stream()
@@ -42,6 +59,18 @@ public class ServiceHelper {
 
     public TarefaDTO buscarTarefaPorId(String id) {
         return tarefaMapper.paraTarefaDTO(buscaTarefaPorId(id));
+    }
+
+    public List<TarefaDTO> buscarTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
+        return buscaTarefasPorPeriodo(inicio, fim).stream()
+                .map(tarefaMapper::paraTarefaDTO)
+                .toList();
+    }
+
+    public List<TarefaDTO> buscarTarefasPorDataEvento(LocalDateTime dataEvento) {
+        return buscaTarefasPorDataEvento(dataEvento).stream()
+                .map(tarefaMapper::paraTarefaDTO)
+                .toList();
     }
 
     public TarefaDTO deletaTarefaPorId(String id) {
