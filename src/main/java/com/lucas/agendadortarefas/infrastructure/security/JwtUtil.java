@@ -25,7 +25,6 @@ public class JwtUtil {
 
     // Extrai o nome de usuário do token JWT
     public String extractUsername(String token) {
-        // Obtém o assunto (nome de usuário) das claims do token
         return extractClaims(token).getSubject();
     }
 
