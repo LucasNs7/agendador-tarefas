@@ -1,8 +1,11 @@
 package com.lucas.agendadortarefas.business.helper;
 
+import com.lucas.agendadortarefas.business.dto.AtualizacaoTarefaDTO;
 import com.lucas.agendadortarefas.business.dto.TarefaDTO;
+import com.lucas.agendadortarefas.business.mapper.TarefaAtualizadaMapper;
 import com.lucas.agendadortarefas.business.mapper.TarefaMapper;
 import com.lucas.agendadortarefas.infrastructure.entity.Tarefa;
+import com.lucas.agendadortarefas.infrastructure.enums.StatusNotificacaoEnum;
 import com.lucas.agendadortarefas.infrastructure.exception.ResourceNotFoundException;
 import com.lucas.agendadortarefas.infrastructure.repository.TarefaRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ public class ServiceHelper {
 
     private final TarefaRepository tarefaRepository;
     private final TarefaMapper tarefaMapper;
+    private final TarefaAtualizadaMapper tarefaAtualizadaMapper;
 
     // ==> Úteis
     private List<Tarefa> verificaListaVazia(List<Tarefa> tarefaList) {
@@ -53,6 +57,19 @@ public class ServiceHelper {
         return verificaListaVazia(tarefaRepository.findByDataEvento(dataEvento));
     }
 
+    private Tarefa atualizaTarefa(String id, AtualizacaoTarefaDTO dto) {
+        Tarefa entity = buscaTarefaPorId(id);
+        entity.setDataAlteracao(LocalDateTime.now());
+        tarefaAtualizadaMapper.mapeiaCamposAtualizaveis(dto, entity);
+        return tarefaRepository.save(entity);
+    }
+
+    private Tarefa atualizaStatus(String id, StatusNotificacaoEnum statusNotificacao) {
+        Tarefa entity = buscaTarefaPorId(id);
+        entity.setStatusNotificacao(statusNotificacao);
+        return tarefaRepository.save(entity);
+    }
+
     // ==> TarefaDTO Section
     public List<TarefaDTO> buscarTodasAsTarefasPorEmail(String usuarioEmail) {
          return mapeiaListaParaTarefaDTO(buscaTodasAsTarefasPorEmail(usuarioEmail));
@@ -68,6 +85,14 @@ public class ServiceHelper {
 
     public List<TarefaDTO> buscarTarefasPorDataEvento(LocalDateTime dataEvento) {
         return mapeiaListaParaTarefaDTO(buscaTarefasPorDataEvento(dataEvento));
+    }
+
+    public TarefaDTO atualizarTarefa(String id, AtualizacaoTarefaDTO dto) {
+        return tarefaMapper.paraTarefaDTO(atualizaTarefa(id, dto));
+    }
+
+    public TarefaDTO atualizarStatus(String id, StatusNotificacaoEnum statusNotificacao) {
+        return tarefaMapper.paraTarefaDTO(atualizaStatus(id, statusNotificacao));
     }
 
     public TarefaDTO deletaTarefaPorId(String id) {

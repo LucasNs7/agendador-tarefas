@@ -1,5 +1,7 @@
 package com.lucas.agendadortarefas.controller;
 
+import com.lucas.agendadortarefas.business.dto.AtualizacaoStatusDTO;
+import com.lucas.agendadortarefas.business.dto.AtualizacaoTarefaDTO;
 import com.lucas.agendadortarefas.business.dto.TarefaDTO;
 import com.lucas.agendadortarefas.business.helper.ControllerHelper;
 import com.lucas.agendadortarefas.business.service.TarefaService;
@@ -27,7 +29,7 @@ public class TarefaController {
         return ResponseEntity.ok(tarefaService.criarTarefa(token, tarefaDTO));
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> buscarTodasAsTarefasPorEmail(@RequestHeader("Authorization") String token) {
         return controllerHelper.tryCatchFunction(
                 () -> tarefaService.buscarTodasAsTarefasPorEmail(token),
@@ -72,7 +74,28 @@ public class TarefaController {
         );
     }
 
-    @DeleteMapping()
+    @PutMapping
+    public ResponseEntity<?> atualizarTarefa(@RequestParam @Valid String id,
+                                             @RequestBody @Valid AtualizacaoTarefaDTO dto){
+        return controllerHelper.tryCatchFunction(
+                () -> tarefaService.atualizarTarefa(id, dto),
+                HttpStatus.OK,
+                ResourceNotFoundException.class,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @PatchMapping("/status")
+    public ResponseEntity<?> atualizarStatus(@RequestBody @Valid AtualizacaoStatusDTO dto) {
+        return controllerHelper.tryCatchFunction(
+                () -> tarefaService.atualizarStatus(dto.getId(), dto.getStatusNotificacao()),
+                HttpStatus.OK,
+                ResourceNotFoundException.class,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @DeleteMapping
     public ResponseEntity<?> deletarTarefaPorId(@RequestParam @Valid String id){
         return controllerHelper.tryCatchFunction(
                 () -> tarefaService.deletarTarefaPorId(id),

@@ -1,5 +1,6 @@
 package com.lucas.agendadortarefas.business.service;
 
+import com.lucas.agendadortarefas.business.dto.AtualizacaoTarefaDTO;
 import com.lucas.agendadortarefas.business.dto.TarefaDTO;
 import com.lucas.agendadortarefas.business.helper.ServiceHelper;
 import com.lucas.agendadortarefas.business.mapper.TarefaMapper;
@@ -53,6 +54,16 @@ public class TarefaService {
     @Transactional
     public List<TarefaDTO> buscarTarefasPorDataEvento(LocalDateTime dataEvento) {
         return serviceHelper.buscarTarefasPorDataEvento(dataEvento);
+    }
+
+    @Transactional
+    public TarefaDTO atualizarTarefa(String id, AtualizacaoTarefaDTO dto) {
+        return serviceHelper.atualizarTarefa(id, dto);
+    }
+
+    @Transactional
+    public TarefaDTO atualizarStatus(String id, StatusNotificacaoEnum statusNotificacao) {
+        return serviceHelper.atualizarStatus(id, statusNotificacao);
     }
 
     @Transactional
