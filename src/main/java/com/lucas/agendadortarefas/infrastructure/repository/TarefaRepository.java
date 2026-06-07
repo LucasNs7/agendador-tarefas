@@ -20,4 +20,8 @@ public interface TarefaRepository extends MongoRepository<Tarefa, String> {
     List<Tarefa> findByDataEvento(LocalDateTime dataEvento);
 
     void deleteById(String id);
+
+    void deleteByDataEventoBetween(LocalDateTime inicio, LocalDateTime fim);
+
+    void deleteByDataEvento(LocalDateTime dataEvento);
 }

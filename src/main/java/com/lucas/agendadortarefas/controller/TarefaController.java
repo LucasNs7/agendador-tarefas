@@ -81,4 +81,29 @@ public class TarefaController {
                 HttpStatus.NOT_FOUND
         );
     }
+
+    @DeleteMapping("/period")
+    public ResponseEntity<?> deletarTarefasPorPeriodo(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim
+    ){
+        return controllerHelper.tryCatchFunction(
+                () -> tarefaService.deletarTarefasPorPeriodo(inicio, fim),
+                HttpStatus.OK,
+                ResourceNotFoundException.class,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @DeleteMapping("/date")
+    public ResponseEntity<?> deletarTarefasPorDataEvento(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataEvento
+    ){
+        return controllerHelper.tryCatchFunction(
+                () -> tarefaService.deletarTarefasPorDataEvento(dataEvento),
+                HttpStatus.OK,
+                ResourceNotFoundException.class,
+                HttpStatus.NOT_FOUND
+        );
+    }
 }

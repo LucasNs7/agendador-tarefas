@@ -19,13 +19,24 @@ public class ServiceHelper {
     private final TarefaRepository tarefaRepository;
     private final TarefaMapper tarefaMapper;
 
-    // ==> Busca Entitys
-    private List<Tarefa> buscaTodasAsTarefasPorEmail(String usuarioEmail) {
-        return Optional.ofNullable(tarefaRepository.findByUsuarioEmail(usuarioEmail))
+    // ==> Úteis
+    private List<Tarefa> verificaListaVazia(List<Tarefa> tarefaList) {
+        return Optional.ofNullable(tarefaList)
                 .filter(lista -> !lista.isEmpty())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Tarefas não encontradas!")
                 );
+    }
+
+    private List<TarefaDTO> mapeiaListaParaTarefaDTO(List<Tarefa> tarefaList) {
+        return tarefaList.stream()
+                .map(tarefaMapper::paraTarefaDTO)
+                .toList();
+    }
+
+    // ==> Busca Entitys
+    private List<Tarefa> buscaTodasAsTarefasPorEmail(String usuarioEmail) {
+        return verificaListaVazia(tarefaRepository.findByUsuarioEmail(usuarioEmail));
     }
 
     private Tarefa buscaTarefaPorId(String id) {
@@ -35,26 +46,16 @@ public class ServiceHelper {
     }
 
     private List<Tarefa> buscaTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
-        return Optional.ofNullable(tarefaRepository.findByDataEventoBetween(inicio, fim))
-                .filter(lista -> !lista.isEmpty())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Tarefas não  encontradas!")
-                );
+        return verificaListaVazia(tarefaRepository.findByDataEventoBetween(inicio, fim));
     }
 
-    public List<Tarefa> buscaTarefasPorDataEvento(LocalDateTime dataEvento) {
-        return Optional.ofNullable(tarefaRepository.findByDataEvento(dataEvento))
-                .filter(lista -> !lista.isEmpty())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Tarefas não encontradas!")
-                );
+    private List<Tarefa> buscaTarefasPorDataEvento(LocalDateTime dataEvento) {
+        return verificaListaVazia(tarefaRepository.findByDataEvento(dataEvento));
     }
 
     // ==> TarefaDTO Section
     public List<TarefaDTO> buscarTodasAsTarefasPorEmail(String usuarioEmail) {
-         return buscaTodasAsTarefasPorEmail(usuarioEmail).stream()
-                 .map(tarefaMapper::paraTarefaDTO)
-                 .toList();
+         return mapeiaListaParaTarefaDTO(buscaTodasAsTarefasPorEmail(usuarioEmail));
     }
 
     public TarefaDTO buscarTarefaPorId(String id) {
@@ -62,20 +63,28 @@ public class ServiceHelper {
     }
 
     public List<TarefaDTO> buscarTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
-        return buscaTarefasPorPeriodo(inicio, fim).stream()
-                .map(tarefaMapper::paraTarefaDTO)
-                .toList();
+        return mapeiaListaParaTarefaDTO(buscaTarefasPorPeriodo(inicio, fim));
     }
 
     public List<TarefaDTO> buscarTarefasPorDataEvento(LocalDateTime dataEvento) {
-        return buscaTarefasPorDataEvento(dataEvento).stream()
-                .map(tarefaMapper::paraTarefaDTO)
-                .toList();
+        return mapeiaListaParaTarefaDTO(buscaTarefasPorDataEvento(dataEvento));
     }
 
     public TarefaDTO deletaTarefaPorId(String id) {
         TarefaDTO dto = buscarTarefaPorId(id);
         tarefaRepository.deleteById(id);
         return dto;
+    }
+
+    public List<TarefaDTO> deletaTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
+        List<TarefaDTO> dtos = buscarTarefasPorPeriodo(inicio, fim);
+        tarefaRepository.deleteByDataEventoBetween(inicio, fim);
+        return dtos;
+    }
+
+    public List<TarefaDTO> deletaTarefasPorDataEvento(LocalDateTime dataEvento) {
+        List<TarefaDTO> dtos = buscarTarefasPorDataEvento(dataEvento);
+        tarefaRepository.deleteByDataEvento(dataEvento);
+        return dtos;
     }
 }

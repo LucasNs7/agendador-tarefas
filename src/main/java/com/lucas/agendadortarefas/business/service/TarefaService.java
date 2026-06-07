@@ -59,4 +59,14 @@ public class TarefaService {
     public TarefaDTO deletarTarefaPorId(String id) {
         return serviceHelper.deletaTarefaPorId(id);
     }
+
+    @Transactional
+    public List<TarefaDTO> deletarTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
+        return serviceHelper.deletaTarefasPorPeriodo(inicio, fim);
+    }
+
+    @Transactional
+    public List<TarefaDTO> deletarTarefasPorDataEvento(LocalDateTime dataEvento) {
+        return serviceHelper.deletaTarefasPorDataEvento(dataEvento);
+    }
 }
