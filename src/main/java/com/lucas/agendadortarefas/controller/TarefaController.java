@@ -5,6 +5,7 @@ import com.lucas.agendadortarefas.business.dto.AtualizacaoTarefaDTO;
 import com.lucas.agendadortarefas.business.dto.TarefaDTO;
 import com.lucas.agendadortarefas.business.helper.ControllerHelper;
 import com.lucas.agendadortarefas.business.service.TarefaService;
+import com.lucas.agendadortarefas.infrastructure.exception.ConflictException;
 import com.lucas.agendadortarefas.infrastructure.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,14 @@ public class TarefaController {
     private final ControllerHelper controllerHelper;
 
     @PostMapping
-    public ResponseEntity<TarefaDTO> criarTarefa(@RequestBody @Valid TarefaDTO tarefaDTO,
+    public ResponseEntity<?> criarTarefa(@RequestBody @Valid TarefaDTO tarefaDTO,
                                                  @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(tarefaService.criarTarefa(token, tarefaDTO));
+        return controllerHelper.tryCatchFunction(
+                () -> tarefaService.criarTarefa(token, tarefaDTO),
+                HttpStatus.OK,
+                ConflictException.class,
+                HttpStatus.CONFLICT
+        );
     }
 
     @GetMapping

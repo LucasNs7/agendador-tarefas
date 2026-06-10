@@ -15,6 +15,12 @@ public interface TarefaRepository extends MongoRepository<Tarefa, String> {
 
     Optional<Tarefa> findById(String id);
 
+    boolean existsByDataEvento(LocalDateTime dataEvento);
+
+    boolean existsByUsarioEmail(String usarioEmail);
+
+    boolean existsByNomeTarefa(String nomeTarefa);
+
     List<Tarefa> findByDataEventoBetween(LocalDateTime inicio, LocalDateTime fim);
 
     List<Tarefa> findByDataEvento(LocalDateTime dataEvento);
