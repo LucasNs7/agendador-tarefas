@@ -6,6 +6,7 @@ import com.lucas.agendadortarefas.business.mapper.TarefaAtualizadaMapper;
 import com.lucas.agendadortarefas.business.mapper.TarefaMapper;
 import com.lucas.agendadortarefas.infrastructure.entity.Tarefa;
 import com.lucas.agendadortarefas.infrastructure.enums.StatusNotificacaoEnum;
+import com.lucas.agendadortarefas.infrastructure.exception.ConflictException;
 import com.lucas.agendadortarefas.infrastructure.exception.ResourceNotFoundException;
 import com.lucas.agendadortarefas.infrastructure.repository.TarefaRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,16 @@ public class ServiceHelper {
         return tarefaList.stream()
                 .map(tarefaMapper::paraTarefaDTO)
                 .toList();
+    }
+
+    public void verificaTarefaExistente(TarefaDTO tarefaDTO, String usuarioEmail) {
+        if (
+            tarefaRepository.existsByNomeTarefa(tarefaDTO.getNomeTarefa()) &&
+            tarefaRepository.existsByDataEvento(tarefaDTO.getDataEvento()) &&
+            tarefaRepository.existsByUsarioEmail(usuarioEmail)
+        ) {
+                throw new ConflictException("Tarefa já cadastrada!");
+        }
     }
 
     // ==> Busca Entitys
