@@ -23,7 +23,7 @@ public class AtualizacaoStatusDTO {
     private String id;
 
     @JsonFormat(with = JsonFormat.Feature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
-    @NotNull(message = "Status inválido! Use apenas: PENDENTE, ENVIADO ou CANCELADO.")
+    @NotNull(message = "Status inválido! Use apenas: PENDENTE, NOTIFICADO ou CANCELADO.")
     @ValueOfEnum(enumClass = StatusNotificacaoEnum.class)
     private StatusNotificacaoEnum statusNotificacao;
 }

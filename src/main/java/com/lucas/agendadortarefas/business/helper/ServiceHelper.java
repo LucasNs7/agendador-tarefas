@@ -43,7 +43,7 @@ public class ServiceHelper {
         if (
             tarefaRepository.existsByNomeTarefa(tarefaDTO.getNomeTarefa()) &&
             tarefaRepository.existsByDataEvento(tarefaDTO.getDataEvento()) &&
-            tarefaRepository.existsByUsarioEmail(usuarioEmail)
+            tarefaRepository.existsByUsuarioEmail(usuarioEmail)
         ) {
                 throw new ConflictException("Tarefa já cadastrada!");
         }
@@ -61,7 +61,11 @@ public class ServiceHelper {
     }
 
     private List<Tarefa> buscaTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
-        return verificaListaVazia(tarefaRepository.findByDataEventoBetween(inicio, fim));
+        return verificaListaVazia(
+                tarefaRepository.findByDataEventoBetweenAndStatusNotificacao(
+                        inicio, fim, StatusNotificacaoEnum.PENDENTE
+                )
+        );
     }
 
     private List<Tarefa> buscaTarefasPorDataEvento(LocalDateTime dataEvento) {
