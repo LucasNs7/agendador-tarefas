@@ -6,6 +6,7 @@ import com.lucas.agendadortarefas.business.mapper.TarefaAtualizadaMapper;
 import com.lucas.agendadortarefas.business.mapper.TarefaMapper;
 import com.lucas.agendadortarefas.infrastructure.entity.Tarefa;
 import com.lucas.agendadortarefas.infrastructure.enums.StatusNotificacaoEnum;
+import com.lucas.agendadortarefas.infrastructure.exception.ConflictException;
 import com.lucas.agendadortarefas.infrastructure.exception.ResourceNotFoundException;
 import com.lucas.agendadortarefas.infrastructure.repository.TarefaRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,16 @@ public class ServiceHelper {
                 .toList();
     }
 
+    public void verificaTarefaExistente(TarefaDTO tarefaDTO, String usuarioEmail) {
+        if (
+            tarefaRepository.existsByNomeTarefa(tarefaDTO.getNomeTarefa()) &&
+            tarefaRepository.existsByDataEvento(tarefaDTO.getDataEvento()) &&
+            tarefaRepository.existsByUsuarioEmail(usuarioEmail)
+        ) {
+                throw new ConflictException("Tarefa já cadastrada!");
+        }
+    }
+
     // ==> Busca Entitys
     private List<Tarefa> buscaTodasAsTarefasPorEmail(String usuarioEmail) {
         return verificaListaVazia(tarefaRepository.findByUsuarioEmail(usuarioEmail));
@@ -50,7 +61,11 @@ public class ServiceHelper {
     }
 
     private List<Tarefa> buscaTarefasPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
-        return verificaListaVazia(tarefaRepository.findByDataEventoBetween(inicio, fim));
+        return verificaListaVazia(
+                tarefaRepository.findByDataEventoBetweenAndStatusNotificacao(
+                        inicio, fim, StatusNotificacaoEnum.PENDENTE
+                )
+        );
     }
 
     private List<Tarefa> buscaTarefasPorDataEvento(LocalDateTime dataEvento) {

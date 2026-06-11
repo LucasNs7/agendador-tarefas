@@ -26,6 +26,7 @@ public class TarefaService {
 
     public TarefaDTO criarTarefa(String token, TarefaDTO tarefaDTO) {
         String usuarioEmail = jwtUtil.extractUsername(token.substring(7));
+        serviceHelper.verificaTarefaExistente(tarefaDTO, usuarioEmail);
         tarefaDTO.setUsuarioEmail(usuarioEmail);
         tarefaDTO.setDataCriacao(LocalDateTime.now());
         tarefaDTO.setDataAlteracao(LocalDateTime.now());
